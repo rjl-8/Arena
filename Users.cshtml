@@ -1,0 +1,93 @@
+@{
+Page.Title = "Users";
+
+var db = Database.Open("GenericDataConnString");
+
+//   pull list of existing entry types
+var rsBattles = db.Query("SELECT battle_id, battle_name, webchat_id, map_id FROM arena.battles");
+
+var rsCharacters = db.Query("SELECT c.user_id, character_id, character_name FROM arena.characters c JOIN arena.users u ON c.user_id = u.user_id WHERE u.user_name = '" + Request["user_name"] + "'");
+
+var rsUser = db.Query("SELECT user_id FROM arena.users WHERE user_name = '" + Request["user_name"] + "'");
+}
+
+<script src="/js/general_ajax.js"></script>
+
+<script>
+function GoToArena()
+{
+    document.getElementById('frm_main').submit();
+//    location.href = 'Arena';
+}
+
+function LoadCharacter()
+{
+   if (document.getElementById("sel_characters").selectedIndex != 0)
+   {
+      var myRequest = new AJAXRequest();
+      myRequest.URL = "ajax_GetCharacterSheet.cshtml";
+      myRequest.params = "character_id=" + document.getElementById("sel_characters").options[document.getElementById("sel_characters").selectedIndex].value + "&user_name=ajax";
+      myRequest.method = "POST";
+      myRequest.aSynch = true;
+      myRequest.callBackFunc = PostAjaxLoadCharacter;
+      myRequest.getXML = false;
+      myRequest.send();
+   }
+}
+
+function PostAjaxLoadCharacter(inHTML)
+{
+   document.getElementById("div_character_sheet").innerHTML = inHTML;
+}
+</script>
+
+<!DOCTYPE html>
+
+<html lang="en">
+   <head>
+      <meta charset="utf-8" />
+   </head>
+
+   <body>
+
+
+   <table border="1">
+   <tr>
+      <td>
+      <form id='frm_main' action='Arena' method='post'>
+      <input type='hidden' name='user_id' value='@rsUser.ElementAt(0).user_id'>
+      Battles:<br />
+      <select name="battle_id" id="sel_battles">
+      @{
+         foreach (var row in rsBattles)
+         {
+            <option value="@row.battle_id">@row.battle_name</option>
+         }
+      }
+      </select>
+      </form>
+      </td>
+      <td>
+      <input type="button" value="Go To Arena!" onclick="GoToArena();">
+      </td>
+   </tr>
+   <tr>
+      <td colspan="2">
+      Characters:<br />
+      <select name="sel_characters" id="sel_characters" onchange="LoadCharacter();">
+      <option>Select a character...</option>
+      <option value="-1">Blank</option>
+      @{
+         foreach (var row in rsCharacters)
+         {
+            <option value="@row.character_id">@row.character_name</option>
+         }
+      }
+      </select>
+      <div id="div_character_sheet"></div>
+      </td>
+   </tr>
+   </table>
+
+   </body>
+</html>

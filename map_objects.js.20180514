@@ -1,0 +1,181 @@
+var Battle = new Array();
+//var MapObjects = new Array();
+
+function resetBattle()
+{
+    Battle = new Array()
+}
+
+function addObject(inStep, inJSON)
+{
+    var obj = eval(inJSON)
+
+    //   make sure its a valid map object
+    if (obj.type)
+    {
+        if (!Battle[inStep])
+        {
+            Battle[inStep] = new Array()
+        }
+        Battle[inStep].pop(obj)
+    }
+}
+
+
+
+
+
+
+
+
+var ObjectArray = new Array();
+ 
+function drawObjects()
+{
+   for (var i = 0; i < ObjectArray.length; i++)
+   {
+      drawObject(ObjectArray[i].type, ObjectArray[i].x, ObjectArray[i].y, ObjectArray[i].opts);
+   }
+}
+ 
+function drawObject(inType, inX, inY, inOpts)
+{
+   if (inType == "NorthFacingCar")
+      drawNorthFacingCar(inX, inY, inOpts);
+   else if (inType == "VerticalLine")
+      drawVerticalLine(inX, inY, inOpts);
+   else if (inType == "HorizontalLine")
+      drawHorizontalLine(inX, inY, inOpts);
+}
+ 
+function AddObject()
+{
+   var obj = new Object();
+   obj.type = document.getElementById("id_add_object_type")[document.getElementById("id_add_object_type").selectedIndex].value;
+   obj.x = prev_x;
+   obj.y = prev_y;
+   obj.opts = "empty";
+ 
+   var retval = ObjectArray.push(obj);
+ 
+   var option = document.createElement("option");
+   option.text = obj.type;
+   document.getElementById("id_object_list").add(option);
+}
+
+function AddObject(inType, inX, inY, inOpts)
+{
+   var obj = new Object();
+   obj.type = inType;
+   obj.x = inX;
+   obj.y = inY;
+   obj.opts = inOpts;
+ 
+   var retval = ObjectArray.push(obj);
+ 
+   var option = document.createElement("option");
+   option.text = obj.type;
+   document.getElementById("id_object_list").add(option);
+}
+ 
+function DelObject()
+{
+}
+ 
+function SelectObjectFromList()
+{
+   var canvas = document.getElementById(CanvasName);
+   if (!canvas.getContext)
+      return;
+ 
+   refresh();
+   var ctx = canvas.getContext("2d");
+   ctx.strokeStyle = "red";
+   drawObject(ObjectArray[document.getElementById("id_object_list").selectedIndex].type, ObjectArray[document.getElementById("id_object_list").selectedIndex].x, ObjectArray[document.getElementById("id_object_list").selectedIndex].y, ObjectArray[document.getElementById("id_object_list").selectedIndex].opts);
+   ctx.strokeStyle = "black";
+}
+
+function drawNorthFacingCar(inX, inY, inOpts)
+{
+   var canvas = document.getElementById(CanvasName);
+   if (!canvas.getContext)
+      return;
+   var ctx = canvas.getContext("2d");
+   var car_width = HexWidth;
+   var car_length = HexWidth * 2;
+ 
+   //   1___________4
+   //   |           |
+   //   |           |
+   //   |           |
+   //  5|___________|6
+   //   |           |
+   //   |           |
+   //  7|___________|8
+   //   |           |
+   //   |           |
+   //   |___________|
+   //   2           3
+ 
+   ctx.beginPath();
+   // 1
+   ctx.moveTo(inX, inY);
+   // 2
+   ctx.lineTo(inX, inY + car_length);
+   // 3
+   ctx.lineTo(inX + car_width, inY + car_length);
+   // 4
+   ctx.lineTo(inX + car_width, inY);
+   ctx.lineTo(inX, inY);
+   // 5
+   ctx.moveTo(inX, inY + car_length * .4);
+   // 6
+   ctx.lineTo(inX + car_width, inY + car_length * .4);
+   // 7
+   ctx.moveTo(inX, inY + car_length * .7);
+   // 8
+   ctx.lineTo(inX + car_width, inY + car_length * .7);
+ 
+   if (inOpts == "fill")
+      ctx.fill();
+   else
+      ctx.closePath();
+ 
+   ctx.stroke();
+}
+
+function drawVerticalLine(inX, inY, inOpts)
+{
+   var canvas = document.getElementById(CanvasName);
+   if (!canvas.getContext)
+      return;
+   var ctx = canvas.getContext("2d");
+ 
+   ctx.beginPath();
+   ctx.moveTo(inX, inY);
+   ctx.lineTo(inX, inY + HexWidth);
+   if (inOpts == "fill")
+      ctx.fill();
+   else
+      ctx.closePath();
+ 
+   ctx.stroke();
+}
+ 
+function drawHorizontalLine(inX, inY, inOpts)
+{
+   var canvas = document.getElementById(CanvasName);
+   if (!canvas.getContext)
+      return;
+   var ctx = canvas.getContext("2d");
+ 
+   ctx.beginPath();
+   ctx.moveTo(inX, inY);
+   ctx.lineTo(inX + HexWidth, inY);
+   if (inOpts == "fill")
+      ctx.fill();
+   else
+      ctx.closePath();
+ 
+   ctx.stroke();
+}

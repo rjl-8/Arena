@@ -1,0 +1,11 @@
+@{
+// Set the layout page for the whole site
+   Layout = "_Layout.cshtml";
+
+   if ((Request["user_name"] == "" || Request["user_name"] == null) && Request.ServerVariables["SCRIPT_NAME"].IndexOf("Login.cshtml") == -1)
+   {
+//      Response.Redirect("Login.cshtml");
+   }
+}
+
+

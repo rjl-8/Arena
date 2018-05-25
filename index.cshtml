@@ -1,0 +1,38 @@
+@{
+Page.Title = "Arena Login";
+
+var debug = "";
+
+var db = Database.Open("GenericDataConnString");
+
+var sql = "";
+
+var rsUsers = db.Query("SELECT * FROM arena.users");
+
+//   pull list of existing entry types
+//var rsObjects = db.Query("SELECT type, x, y, angle options FROM arena.map_objects WHERE map_id = 1");
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+    </head>
+
+    <body>
+    <table border='1'>
+        <tr>
+            <td>Select a user</td>
+            <td>
+                <select>
+                </select>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Select a battle</td>
+        </tr>
+    </table>
+    </body>
+</html>

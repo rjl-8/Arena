@@ -1,0 +1,29 @@
+﻿@{
+    Page.Title = "ajax_GetCharacterSheet.cshtml";
+    //PageStart = "";
+    var fileName = "";
+    if (IsPost)
+    {
+//        Request.Files["thefile"].SaveAs(@"MyPostedFile");
+        var fileSavePath = "";
+        var uploadedFile = Request.Files["thefile"];
+        fileName = Path.GetFileName(uploadedFile.FileName);
+        fileSavePath = Server.MapPath("/arena/char_images/" + fileName);
+        uploadedFile.SaveAs(fileSavePath);
+    }
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+    </head>
+    <body>
+        <form method="post" enctype="multipart/form-data">
+        <input type="file" accept="image" name="thefile">
+        <input type="submit">
+        </form>
+    </body>
+</html>

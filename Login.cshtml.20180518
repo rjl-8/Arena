@@ -1,0 +1,90 @@
+@{
+    Page.Title = "Login";
+
+    var db = Database.Open("GenericDataConnString");
+
+    var msg = "";
+    if (IsPost)
+    {
+        //   new users
+        if (Request["action_type"] == "new")
+        {
+            db.Execute("INSERT INTO arena.users (user_name, password) VALUES ('" + Request["user_name"] + "', '" + Request["pwrd"] + "')");
+//            Session["user_name"] = Request["user_name"];
+            Response.Redirect("Users.cshtml?user_name=" + Request["user_name"]);
+        }
+
+        //   validate login
+        var rsChk = db.Query("SELECT user_name FROM arena.users WHERE user_name = '" + Request["user_name"] + "' AND password = '" + Request["pwrd"] + "'");
+
+        var iChk = "";
+        foreach (var row in rsChk)
+        {
+            iChk = row.user_name;
+        }
+
+        if (iChk != "")
+        {
+//            Session["user_name"] = iChk;
+            Response.Write("<form id='qk_go' action='Users' method='post'>");
+            Response.Write("<input type='hidden' name='user_name' value='" + iChk + "'>");
+            Response.Write("</form>");
+            Response.Write("<script>");
+            Response.Write("document.getElementById('qk_go').submit();");
+            Response.Write("</script>");
+//            Response.Redirect("Users.cshtml?user_name=" + iChk);
+        }
+
+        msg = "<style='font-color:red'>Invalid user_name/password combo</style>";
+    }
+
+    var rsUsers = db.Query("SELECT user_name FROM arena.users ORDER BY user_name");
+}
+
+<script>
+function go(inBtn)
+{
+    document.getElementById('hid_action_type').value = inBtn;
+    document.getElementById('frm_main').submit();
+}
+</script>
+
+<html>
+    <head></head>
+    <body>
+    <form method="post" id="frm_main">
+
+    <input type="hidden" name="action_type" id="hid_action_type">
+
+    @msg
+
+    <table border="1">
+    <tr>
+        <td>User Name:</td>
+        <td>
+        <select name="lst_users" id="sel_users" onchange="document.getElementById('txt_user_name').value=document.getElementById('sel_users')[document.getElementById('sel_users').selectedIndex].text;">
+        <option></option>
+        @{
+            foreach (var row in rsUsers)
+            {
+                <option>@row.user_name</option>
+            }
+        }
+        </select>
+        <input type="text" name="user_name" id="txt_user_name">
+        </td>
+    </tr>
+    <tr>
+        <td>Password:</td>
+        <td><input type="password" name="pwrd"></td>
+    </tr>
+    <tr>
+        <td>
+        <input type="button" value="Submit" onclick="go('chk');">
+        <input type="button" value="New User" onclick="go('new');">
+        </td>
+    </tr>
+    </table>
+    </form>
+    </body>
+</html>

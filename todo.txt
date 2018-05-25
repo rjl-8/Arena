@@ -1,0 +1,42 @@
+*   login page
+*   prints red hex at last scale when changing scale
+*   make map move to center by default (but how to account for empty map when changing sizes)
+*   how come so few columns on map?
+*   character div
+    load
+    save
+*   turn div
+    "animation" option
+*   mover div
+*   map edit div
+*   save dice results into game flow so that they 'count' when necessary
+
+
+*   data
+    arena.users
+        user_id
+        user_name
+        password
+    arena.characters
+        user_id
+        character fields
+    arena.maps
+        map_id
+        map_name
+    arena.map_objects
+        map_id
+        object fields
+
+    arena.battles
+        battle_id
+        latest/next turn info
+    arena.battle_map_objects
+        battle_id
+        turn fields
+        object fields
+    arena.battle_characters
+        battle_id
+        user_id
+        original character fields
+        current character fields
+done

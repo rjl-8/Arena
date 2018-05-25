@@ -1,0 +1,89 @@
+* {
+    font : 8pt Arial;
+}
+
+#div_map {
+    width : 100%;
+    height : 100%;
+    padding : 0px;
+    border : 0px;
+    top : 0px;
+    left : 0px;
+    position : absolute;
+    overflow:auto;overflow-style:scrollbar
+	z-index : -1;
+}
+
+.canvas {
+    padding : 0px;
+    border : 0px;
+    top : 0px;
+    left : 0px;
+/*    width:2000px;height:2000px;*/
+}
+
+#div_menu {
+    width : auto;
+    height : auto;
+    top : 10px;
+    left : 10px;
+    position : absolute;
+    z-index : 1;
+}
+
+.hidden {
+	display : none;
+}
+
+.floaty {
+	
+}
+
+#div_character {
+	border : solid 1px;
+    background-color: blue;
+	width : 100px;
+	height : 100px;
+	padding : 0px;
+	position : absolute;
+	z-index : 2;
+	top : 50px;
+	left : 50px;
+}
+
+#div_mover {
+	border : solid 1px;
+    background-color: blue;
+	width : 100px;
+	height : 100px;
+	padding : 0px;
+	position : absolute;
+	z-index : 2;
+	top : 50px;
+	left : 50px;
+}
+
+#div_dice {
+/*
+	border : solid 1px;
+    background-color: blue;
+	width : 300px;
+	height : 100px;
+	padding : 0px;
+	position : absolute;
+	z-index : 2;
+    overflow:auto;overflow-style:scrollbar
+	top : 50px;
+	left : 50px;
+
+	display : flex;
+	flex-direction : row;
+	flex-wrap : nowrap;
+*/
+}
+
+.menu_item {
+    background-color: white;
+    width : 100%;
+	border : solid 1px;
+}
