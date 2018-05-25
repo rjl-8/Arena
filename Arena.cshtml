@@ -17,17 +17,15 @@ var sql = "";
 <script src="/js/general_util.js"></script>
 <!--<script src="/js/web_chat.js"></script>-->
 
-<script src="dragFloat.js"></script>
+<script src="js/dragFloat.js"></script>
 
-<script src="map.js"></script>
-<script src="map_objects.js"></script>
+<script src="js/map.js"></script>
+<script src="js/map_objects.js"></script>
+<script src="js/characters.js"></script>
 
 <script>
-var user_id, battle_id;
-if ('@Request["user_id"]' != '')
-    user_id = '@Request["user_id"]';
-if ('@Request["battle_id"]' != '')
-    battle_id = '@Request["battle_id"]';
+var user_id = '@Request["user_id"]';
+var battle_id = '@Request["battle_id"]';
 console.log('user_id=' + user_id);
 console.log('battle_id=' + battle_id);
 </script>
