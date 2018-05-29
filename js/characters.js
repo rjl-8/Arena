@@ -8,7 +8,9 @@ var characters = {
         this.startX = null;
         this.startY = null;
 
-        this.face = null;
+        this.owner = null;
+
+        this.facing = null;
 
         this.id = null;
         this.imgsrc = null;

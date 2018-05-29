@@ -9,6 +9,11 @@ var mapItems = {
         this.startX = null;
         this.startY = null;
 
+        this.origStartX = null;
+        this.origStartY = null;
+
+        this.owner = 'admin';
+
         // x/y values are factors multiplied by hexlength + startX/Y
         // default (null) color = black
         // array of arrays - multiple line paths with each path having multiple points
@@ -62,6 +67,16 @@ var mapItems = {
     },
 
     drawObject : function(inObj) {
+        // scaling starting position
+        if (!inObj.origStartX) {
+            inObj.origStartX = inObj.startX;
+            inObj.origStartY = inObj.startY;
+        }
+        console.log('startX=' + inObj.startX + ' startY=' + inObj.startY)
+        inObj.startX = inObj.origStartX / map.Scale;
+        inObj.startY = inObj.origStartY / map.Scale;
+        console.log('startX=' + inObj.startX + ' startY=' + inObj.startY)
+
         // line paths
         for (var i = 0; i < inObj.linePaths.length; i++)
         {
@@ -115,102 +130,87 @@ var mapItems = {
 
     // item "constructors"
     // *******************
-
-    // makeCar
-    makeCar : function(inOpts) {
+    make : function(inOpts) {
         var retObj = new mapItems.mapObject();
 
-        if (!inOpts.x || !inOpts.y)
-        {
+        if (!inOpts.x || !inOpts.y || !inOpts.type) {
+            console.log('mapItem options not specified correctly')
+            console.log(inOpts);
             return null;
         }
-
-        // a "standard unit" for the length of the car
-        var stdbody = 3;
-
-        var scale = inOpts.scale;
-        if (!scale)
-        {
-            scale = 1;
+        
+        if (!inOpts.scale) {
+            inOpts.scale = 1;
         }
 
-        var rotation = inOpts.rotation;
-        if (!rotation)
-        {
-            rotation = 0;
+        if (!inOpts.rotation) {
+            inOpts.rotation = 0;
         }
 
         retObj.startX = inOpts.x;
         retObj.startY = inOpts.y;
+        retObj.origStartX = inOpts.x;
+        retObj.origStartY = inOpts.y;
 
-        var linePath = [];
-        linePath[0] = {x:0,y:0,fill:true,color:inOpts.bodyColor};
-        linePath[1] = {x:0,y:3*scale};
-        linePath[2] = {x:1*scale,y:3*scale};
-        linePath[3] = {x:1*scale,y:0};
-        linePath[4] = {x:0,y:0};
-        retObj.linePaths[0] = linePath;
+        if (inOpts.type == 'car') {
+            retObj = mapItems.makeCar(inOpts, retObj);
+        }
+        else if (inOpts.type == 'road') {
+            retObj = mapItems.makeRoad(inOpts, retObj);
+        }
 
-        linePath = [];
-        linePath[0] = {x:0,y:1*scale,fill:true,color:inOpts.roofColor};
-        linePath[1] = {x:0,y:2*scale};
-        linePath[2] = {x:1*scale,y:2*scale};
-        linePath[3] = {x:1*scale,y:1*scale};
-        linePath[4] = {x:0,y:1*scale};
-        retObj.linePaths[1] = linePath;
-
-        retObj = mapItems.rotateObject(retObj, rotation);
-
+        retObj = mapItems.rotateObject(retObj, inOpts.rotation);
+        
         return retObj;
     },
 
-    // makeRoad
-    makeRoad : function(inOpts) {
-        var retObj = new mapItems.mapObject();
-
-        if (inOpts.x == null || inOpts.y == null)
-        {
-            return null;
-        }
-
-        // a "standard unit" for the length of the car
-        var stdlane = 1;
-
-        var scale = inOpts.scale;
-        if (!scale)
-        {
-            scale = 1;
-        }
-
-        var rotation = inOpts.rotation;
-        if (!rotation)
-        {
-            rotation = 0;
-        }
-
-        retObj.startX = inOpts.x;
-        retObj.startY = inOpts.y;
-
+    makeRect : function(x1, y1, x2, y2) {
         var linePath = [];
-        linePath[0] = {x:0,y:0,fill:true,color:'gray'};
-        linePath[1] = {x:0,y:scale};
-        linePath[2] = {x:2*stdlane,y:scale};
-        linePath[3] = {x:2*stdlane,y:0};
-        linePath[4] = {x:0,y:0};
-        retObj.linePaths[0] = linePath;
+        linePath[0] = {x:x1,y:y1};
+        linePath[1] = {x:x1,y:y2};
+        linePath[2] = {x:x2,y:y2};
+        linePath[3] = {x:x2,y:y1};
+        linePath[4] = {x:x1,y:y1};
 
-        linePath = [];
+        return linePath;
+    },
+
+    // makeCar
+    makeCar : function(inOpts, inObj) {
+        // default colors
+        // "body" color
+        if (!inOpts.color1) {
+            inOpts.color1 = 'blue';
+        }
+        // "roof" color
+        if (!inOpts.color2) {
+            inOpts.color2 = 'black';
+        }
+
+        inObj.linePaths[0] = mapItems.makeRect(0, 0, 1*inOpts.scale, 3*inOpts.scale);
+        inObj.linePaths[0][0].fill = true;
+        inObj.linePaths[0][0].color = inOpts.color1;
+        inObj.linePaths[1] = mapItems.makeRect(0, 1*inOpts.scale, 1*inOpts.scale, 2*inOpts.scale);
+        inObj.linePaths[1][0].fill = true;
+        inObj.linePaths[1][0].color = inOpts.color2;
+
+        return inObj;
+    },
+
+    // makeRoad
+    makeRoad : function(inOpts, inObj) {
+        // a "standard unit" for the width of a car
+        var stdlane = 1.4;
         var marker = .1
-        linePath[0] = {x:stdlane - marker/2,y:0,fill:true,color:'white'};
-        linePath[1] = {x:stdlane - marker/2,y:scale};
-        linePath[2] = {x:stdlane + marker/2,y:scale};
-        linePath[3] = {x:stdlane + marker/2,y:0};
-        linePath[4] = {x:stdlane - marker/2,y:0};
-        retObj.linePaths[1] = linePath;
 
-        retObj = mapItems.rotateObject(retObj, rotation);
+        inObj.linePaths[0] = mapItems.makeRect(0, 0, 2*stdlane, inOpts.scale);
+        inObj.linePaths[0][0].fill = true;
+        inObj.linePaths[0][0].color = 'gray';
+        inObj.linePaths[1] = mapItems.makeRect(stdlane - marker/2, 0, stdlane + marker/2, inOpts.scale);
+        inObj.linePaths[1][0].fill = true;
+        inObj.linePaths[1][0].color = 'white';
 
-        return retObj;
+        return inObj;
     }
 
     // makeBuilding

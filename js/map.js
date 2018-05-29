@@ -44,7 +44,7 @@ var map = {
     {
         this.Scale = inVal;
 
-        this.HexSideLen = this.BaseHexSideLen * this.Scale;
+        this.HexSideLen = this.BaseHexSideLen / this.Scale;
         this.HexWidth = Math.sqrt(Math.pow(this.HexSideLen + this.HexSideLen * Math.sin(Math.PI/6), 2) + Math.pow(this.HexSideLen * Math.cos(Math.PI/6), 2));
 
         // dont redraw the previous hex when resetting the scale

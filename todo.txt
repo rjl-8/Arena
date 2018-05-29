@@ -32,11 +32,18 @@
         latest/next turn info
     arena.battle_map_objects
         battle_id
+        turn_id
+        owner_id
         turn fields
         object fields
     arena.battle_characters
         battle_id
         user_id
+        character_id
+    arena.battle_character_stats
+        battle_id
+        character_id
+        turn_id
         original character fields
         current character fields
 done
