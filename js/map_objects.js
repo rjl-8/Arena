@@ -14,6 +14,8 @@ var mapItems = {
 
         this.owner = 'admin';
 
+        this.text = null;
+
         // x/y values are factors multiplied by hexlength + startX/Y
         // default (null) color = black
         // array of arrays - multiple line paths with each path having multiple points
@@ -117,6 +119,11 @@ var mapItems = {
             else
                 map.canvasContext.stroke();
         }
+
+        // text
+        if (inObj.text) {
+            map.canvasContext.fillText(inObj.text, x, y)
+        }
     },
 
     drawItems : function() {
@@ -137,8 +144,11 @@ var mapItems = {
             return null;
         }
         
-        if (!inOpts.scale) {
-            inOpts.scale = 1;
+        if (!inOpts.scale1) {
+            inOpts.scale1 = 1;
+        }
+        if (!inOpts.scale2) {
+            inOpts.scale2 = 1;
         }
 
         if (!inOpts.rotation) {
@@ -150,20 +160,8 @@ var mapItems = {
         retObj.origStartX = inOpts.x;
         retObj.origStartY = inOpts.y;
 
-        if (inOpts.type == 'car') {
-            retObj = mapItems.makeCar(inOpts, retObj);
-        }
-        else if (inOpts.type == 'road') {
-            retObj = mapItems.makeRoad(inOpts, retObj);
-        }
-        else if (inOpts.type == 'sidewalk') {
-            retObj = mapItems.makeSidewalk(inOpts, retObj);
-        }
-        else if (inOpts.type == 'building') {
-            retObj = mapItems.makeSidewalk(inOpts, retObj);
-        }
-        else
-            retObj = inOpts.type(inOpts, retObj);
+        // call constructor stored in inOpts
+        retObj = inOpts.type(inOpts, retObj);
 
         retObj = mapItems.rotateObject(retObj, inOpts.rotation);
         
@@ -193,10 +191,10 @@ var mapItems = {
             inOpts.color2 = 'black';
         }
 
-        inObj.linePaths[0] = mapItems.makeRect(0, 0, 1*inOpts.scale, 3*inOpts.scale);
+        inObj.linePaths[0] = mapItems.makeRect(0, 0, 1*inOpts.scale1, 3*inOpts.scale1);
         inObj.linePaths[0][0].fill = true;
         inObj.linePaths[0][0].color = inOpts.color1;
-        inObj.linePaths[1] = mapItems.makeRect(0, 1*inOpts.scale, 1*inOpts.scale, 2*inOpts.scale);
+        inObj.linePaths[1] = mapItems.makeRect(0, 1*inOpts.scale1, 1*inOpts.scale1, 2*inOpts.scale1);
         inObj.linePaths[1][0].fill = true;
         inObj.linePaths[1][0].color = inOpts.color2;
 
@@ -209,10 +207,10 @@ var mapItems = {
         var stdlane = 1.4;
         var marker = .1;
 
-        inObj.linePaths[0] = mapItems.makeRect(0, 0, 2*stdlane, inOpts.scale);
+        inObj.linePaths[0] = mapItems.makeRect(0, 0, 2*stdlane, inOpts.scale1);
         inObj.linePaths[0][0].fill = true;
         inObj.linePaths[0][0].color = 'gray';
-        inObj.linePaths[1] = mapItems.makeRect(stdlane - marker/2, 0, stdlane + marker/2, inOpts.scale);
+        inObj.linePaths[1] = mapItems.makeRect(stdlane - marker/2, 0, stdlane + marker/2, inOpts.scale1);
         inObj.linePaths[1][0].fill = true;
         inObj.linePaths[1][0].color = 'white';
 
@@ -221,16 +219,24 @@ var mapItems = {
 
     // makeBuilding
     makeBuilding : function(inOpts, inObj) {
-        // a "standard unit" for the width of a car
-        var stdlane = 1.4;
-        var marker = .1;
+        var wallwidth = .3;
 
-        inObj.linePaths[0] = mapItems.makeRect(0, 0, 2*stdlane, inOpts.scale);
+        inObj.linePaths[0] = mapItems.makeRect(0, 0, inOpts.scale1, inOpts.scale2);
         inObj.linePaths[0][0].fill = true;
-        inObj.linePaths[0][0].color = 'gray';
-        inObj.linePaths[1] = mapItems.makeRect(stdlane - marker/2, 0, stdlane + marker/2, inOpts.scale);
+        inObj.linePaths[0][0].color = 'white';
+        inObj.linePaths[1] = mapItems.makeRect(wallwidth, wallwidth, inOpts.scale1-wallwidth, inOpts.scale2-wallwidth);
         inObj.linePaths[1][0].fill = true;
-        inObj.linePaths[1][0].color = 'white';
+        inObj.linePaths[1][0].color = 'gray';
+        // ac unit
+        inObj.linePaths[1] = mapItems.makeRect(wallwidth, wallwidth, inOpts.scale1-wallwidth, inOpts.scale2-wallwidth);
+        inObj.linePaths[1][0].fill = true;
+        inObj.linePaths[1][0].color = 'gray';
+        // stairs
+        inObj.linePaths[1] = mapItems.makeRect(wallwidth, wallwidth, inOpts.scale1-wallwidth, inOpts.scale2-wallwidth);
+        inObj.linePaths[1][0].fill = true;
+        inObj.linePaths[1][0].color = 'gray';
+
+        inObj.text = inOpts.text;
 
         return inObj;
     },
@@ -240,7 +246,7 @@ var mapItems = {
         // a "standard unit" for the width of a car
         var stdlane = .8;
 
-        inObj.linePaths[0] = mapItems.makeRect(0, 0, stdlane, inOpts.scale);
+        inObj.linePaths[0] = mapItems.makeRect(0, 0, stdlane, inOpts.scale1);
         inObj.linePaths[0][0].fill = true;
         inObj.linePaths[0][0].color = '#AAAAAA';
 
