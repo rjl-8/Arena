@@ -72,10 +72,8 @@ var mapItems = {
             inObj.origStartX = inObj.startX;
             inObj.origStartY = inObj.startY;
         }
-        console.log('startX=' + inObj.startX + ' startY=' + inObj.startY)
         inObj.startX = inObj.origStartX / map.Scale;
         inObj.startY = inObj.origStartY / map.Scale;
-        console.log('startX=' + inObj.startX + ' startY=' + inObj.startY)
 
         // line paths
         for (var i = 0; i < inObj.linePaths.length; i++)
@@ -133,7 +131,7 @@ var mapItems = {
     make : function(inOpts) {
         var retObj = new mapItems.mapObject();
 
-        if (!inOpts.x || !inOpts.y || !inOpts.type) {
+        if (inOpts.x == null || inOpts.y == null || inOpts.type == null) {
             console.log('mapItem options not specified correctly')
             console.log(inOpts);
             return null;
@@ -158,6 +156,14 @@ var mapItems = {
         else if (inOpts.type == 'road') {
             retObj = mapItems.makeRoad(inOpts, retObj);
         }
+        else if (inOpts.type == 'sidewalk') {
+            retObj = mapItems.makeSidewalk(inOpts, retObj);
+        }
+        else if (inOpts.type == 'building') {
+            retObj = mapItems.makeSidewalk(inOpts, retObj);
+        }
+        else
+            retObj = inOpts.type(inOpts, retObj);
 
         retObj = mapItems.rotateObject(retObj, inOpts.rotation);
         
@@ -201,7 +207,7 @@ var mapItems = {
     makeRoad : function(inOpts, inObj) {
         // a "standard unit" for the width of a car
         var stdlane = 1.4;
-        var marker = .1
+        var marker = .1;
 
         inObj.linePaths[0] = mapItems.makeRect(0, 0, 2*stdlane, inOpts.scale);
         inObj.linePaths[0][0].fill = true;
@@ -211,9 +217,34 @@ var mapItems = {
         inObj.linePaths[1][0].color = 'white';
 
         return inObj;
-    }
+    },
 
     // makeBuilding
+    makeBuilding : function(inOpts, inObj) {
+        // a "standard unit" for the width of a car
+        var stdlane = 1.4;
+        var marker = .1;
+
+        inObj.linePaths[0] = mapItems.makeRect(0, 0, 2*stdlane, inOpts.scale);
+        inObj.linePaths[0][0].fill = true;
+        inObj.linePaths[0][0].color = 'gray';
+        inObj.linePaths[1] = mapItems.makeRect(stdlane - marker/2, 0, stdlane + marker/2, inOpts.scale);
+        inObj.linePaths[1][0].fill = true;
+        inObj.linePaths[1][0].color = 'white';
+
+        return inObj;
+    },
+
     // makeSidewalk
+    makeSidewalk : function(inOpts, inObj) {
+        // a "standard unit" for the width of a car
+        var stdlane = .8;
+
+        inObj.linePaths[0] = mapItems.makeRect(0, 0, stdlane, inOpts.scale);
+        inObj.linePaths[0][0].fill = true;
+        inObj.linePaths[0][0].color = '#AAAAAA';
+
+        return inObj;
+    }
 
 }

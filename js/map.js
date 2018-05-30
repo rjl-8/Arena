@@ -6,8 +6,8 @@ var map = {
     CanvasName : null,
     canvasObj : null,
     canvasContext : null,
-    canvasHeight : 4000,
-    canvasWidth : 4000,
+    canvasHeight : 3000,
+    canvasWidth : 6000,
 
     BaseHexSideLen : 30,
     HexSideLen : null,
@@ -91,7 +91,7 @@ var map = {
                 }
                 this.drawHex(x, y, {});
 //                this.canvasContext.fillText(Math.round(x) + ' ' + Math.round(y), x + r * Math.sin(Math.PI/6), y + this.HexSideLen/3);
-                this.canvasContext.fillText(row + ' ' + col, x + r * Math.sin(Math.PI/6), y + this.HexSideLen/3);
+//                this.canvasContext.fillText(row + ' ' + col, x + r * Math.sin(Math.PI/6), y + this.HexSideLen/3);
                 col++;
                 cellno++;
             }
